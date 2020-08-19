@@ -1,5 +1,6 @@
 import 'package:calculator/button.dart';
 import 'package:flutter/material.dart';
+import 'package:math_expressions/math_expressions.dart';
 
 void main() {
   runApp(MyApp());
@@ -43,7 +44,7 @@ class _HomePageState extends State<HomePage> {
     '+',
     '0',
     '.',
-    'ANS',
+    '',
     '=',
   ];
 
@@ -63,7 +64,7 @@ class _HomePageState extends State<HomePage> {
                     alignment: Alignment.centerLeft,
                     child: Text(
                       userQuestion,
-                      style: TextStyle(fontSize: 19),
+                      style: TextStyle(fontSize: 20),
                     ),
                   ),
                   Container(
@@ -71,7 +72,7 @@ class _HomePageState extends State<HomePage> {
                     alignment: Alignment.centerRight,
                     child: Text(
                       userAnswer,
-                      style: TextStyle(fontSize: 19),
+                      style: TextStyle(fontSize: 20),
                     ),
                   )
                 ],
@@ -111,6 +112,18 @@ class _HomePageState extends State<HomePage> {
                       color: Colors.red[600],
                       textColor: Colors.white,
                     );
+                    // Equal Button
+                  } else if (i == buttons.length - 1) {
+                    return Button(
+                      buttonTapped: () {
+                        setState(() {
+                          solve();
+                        });
+                      },
+                      buttonText: buttons[i],
+                      color: Colors.grey[850],
+                      textColor: Colors.white,
+                    );
                     // Rest of the Buttons
                   } else {
                     return Button(
@@ -144,5 +157,14 @@ class _HomePageState extends State<HomePage> {
       return true;
     }
     return false;
+  }
+
+  void solve() {
+    String finalQuestion = userQuestion;
+    Expression exp = Parser().parse(finalQuestion);
+    ContextModel cm = ContextModel();
+    double eval = exp.evaluate(EvaluationType.REAL, cm);
+
+    userAnswer = eval.toString();
   }
 }
